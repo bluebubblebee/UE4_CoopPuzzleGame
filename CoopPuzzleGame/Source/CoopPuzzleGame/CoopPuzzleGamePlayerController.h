@@ -14,30 +14,27 @@ class ACoopPuzzleGamePlayerController : public APlayerController
 public:
 	ACoopPuzzleGamePlayerController();
 
-protected:
-	/** True if the controlled character should navigate to the mouse cursor. */
-	uint32 bMoveToMouseCursor : 1;
+	virtual void BeginPlay() override;
 
-	// Begin PlayerController interface
+protected:
+
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
-	// End PlayerController interface
 
-	/** Resets HMD orientation in VR. */
-	void OnResetVR();
+protected:
 
-	/** Navigate player to the current mouse cursor location. */
-	void MoveToMouseCursor();
+	// Reference to the pawn
+	class ACoopPuzzleGameCharacter* myCharacter;
 
-	/** Navigate player to the current touch location. */
-	void MoveToTouchLocation(const ETouchIndex::Type FingerIndex, const FVector Location);
-	
-	/** Navigate player to the given world location. */
-	void SetNewMoveDestination(const FVector DestLocation);
+	///// Input Actions //////
 
-	/** Input handlers for SetDestination action. */
-	void OnSetDestinationPressed();
-	void OnSetDestinationReleased();
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	void MoveForward(float Value);
+
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	void MoveRight(float Value);
+
+	///// Input Actions //////
 };
 
 

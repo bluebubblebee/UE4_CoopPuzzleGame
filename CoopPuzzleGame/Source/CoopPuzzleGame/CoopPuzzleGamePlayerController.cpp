@@ -9,104 +9,54 @@
 
 ACoopPuzzleGamePlayerController::ACoopPuzzleGamePlayerController()
 {
-	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
+}
+
+void ACoopPuzzleGamePlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Get reference to the character controllerd by this player controller
+	APawn* const pawn = GetPawn();
+	if (pawn != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ACoopPuzzleGamePlayerController::BeginPlay] APawn not null"));
+		myCharacter = Cast<ACoopPuzzleGameCharacter>(pawn);
+	}
+
 }
 
 void ACoopPuzzleGamePlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-
-	// keep updating the destination every tick while desired
-	if (bMoveToMouseCursor)
-	{
-		MoveToMouseCursor();
-	}
 }
 
 void ACoopPuzzleGamePlayerController::SetupInputComponent()
 {
-	// set up gameplay key bindings
 	Super::SetupInputComponent();
 
-	InputComponent->BindAction("SetDestination", IE_Pressed, this, &ACoopPuzzleGamePlayerController::OnSetDestinationPressed);
-	InputComponent->BindAction("SetDestination", IE_Released, this, &ACoopPuzzleGamePlayerController::OnSetDestinationReleased);
-
-	// support touch devices 
-	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ACoopPuzzleGamePlayerController::MoveToTouchLocation);
-	InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &ACoopPuzzleGamePlayerController::MoveToTouchLocation);
-
-	InputComponent->BindAction("ResetVR", IE_Pressed, this, &ACoopPuzzleGamePlayerController::OnResetVR);
+	// Input controller
+	InputComponent->BindAxis("MoveForward", this, &ACoopPuzzleGamePlayerController::MoveForward);
+	InputComponent->BindAxis("MoveRight", this, &ACoopPuzzleGamePlayerController::MoveRight);
 }
 
-void ACoopPuzzleGamePlayerController::OnResetVR()
+void ACoopPuzzleGamePlayerController::MoveForward(float Value)
 {
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
-}
+	if (Value == 0.0f) return;
 
-void ACoopPuzzleGamePlayerController::MoveToMouseCursor()
-{
-	if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
+	if (myCharacter != nullptr)
 	{
-		if (ACoopPuzzleGameCharacter* MyPawn = Cast<ACoopPuzzleGameCharacter>(GetPawn()))
-		{
-			if (MyPawn->GetCursorToWorld())
-			{
-				UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, MyPawn->GetCursorToWorld()->GetComponentLocation());
-			}
-		}
-	}
-	else
-	{
-		// Trace to see what is under the mouse cursor
-		FHitResult Hit;
-		GetHitResultUnderCursor(ECC_Visibility, false, Hit);
-
-		if (Hit.bBlockingHit)
-		{
-			// We hit something, move there
-			SetNewMoveDestination(Hit.ImpactPoint);
-		}
+		myCharacter->MoveForward(Value);
 	}
 }
 
-void ACoopPuzzleGamePlayerController::MoveToTouchLocation(const ETouchIndex::Type FingerIndex, const FVector Location)
+void ACoopPuzzleGamePlayerController::MoveRight(float Value)
 {
-	FVector2D ScreenSpaceLocation(Location);
+	if (Value == 0.0f) return;
 
-	// Trace to see what is under the touch location
-	FHitResult HitResult;
-	GetHitResultAtScreenPosition(ScreenSpaceLocation, CurrentClickTraceChannel, true, HitResult);
-	if (HitResult.bBlockingHit)
+	// The character is in charge of moving the mesh not the player controller
+	if (myCharacter != nullptr)
 	{
-		// We hit something, move there
-		SetNewMoveDestination(HitResult.ImpactPoint);
+		myCharacter->MoveRight(Value);
 	}
-}
-
-void ACoopPuzzleGamePlayerController::SetNewMoveDestination(const FVector DestLocation)
-{
-	APawn* const MyPawn = GetPawn();
-	if (MyPawn)
-	{
-		float const Distance = FVector::Dist(DestLocation, MyPawn->GetActorLocation());
-
-		// We need to issue move command only if far enough in order for walk animation to play correctly
-		if ((Distance > 120.0f))
-		{
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, DestLocation);
-		}
-	}
-}
-
-void ACoopPuzzleGamePlayerController::OnSetDestinationPressed()
-{
-	// set flag to keep updating destination until released
-	bMoveToMouseCursor = true;
-}
-
-void ACoopPuzzleGamePlayerController::OnSetDestinationReleased()
-{
-	// clear flag to indicate we should stop updating the destination
-	bMoveToMouseCursor = false;
 }
