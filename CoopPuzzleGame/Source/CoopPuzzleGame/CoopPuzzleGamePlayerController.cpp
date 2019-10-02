@@ -8,7 +8,7 @@
 #include "Engine/World.h"
 
 ACoopPuzzleGamePlayerController::ACoopPuzzleGamePlayerController()
-{
+{ 
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
 }
 
@@ -38,6 +38,10 @@ void ACoopPuzzleGamePlayerController::SetupInputComponent()
 	// Input controller
 	InputComponent->BindAxis("MoveForward", this, &ACoopPuzzleGamePlayerController::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &ACoopPuzzleGamePlayerController::MoveRight);
+
+
+	// Face buutton	
+	InputComponent->BindAction("FaceButtonBottom", IE_Pressed, this, &ACoopPuzzleGamePlayerController::FaceButtonBottom);
 }
 
 void ACoopPuzzleGamePlayerController::MoveForward(float Value)
@@ -60,3 +64,13 @@ void ACoopPuzzleGamePlayerController::MoveRight(float Value)
 		myCharacter->MoveRight(Value);
 	}
 }
+
+
+void ACoopPuzzleGamePlayerController::FaceButtonBottom()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->HandleInteractInput();
+	}
+}
+

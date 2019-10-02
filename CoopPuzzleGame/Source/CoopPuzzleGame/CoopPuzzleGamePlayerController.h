@@ -34,6 +34,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	void MoveRight(float Value);
 
+	UFUNCTION(BlueprintCallable, Category = "Inputs")
+	void FaceButtonBottom();
+
 	///// Input Actions //////
 };
 

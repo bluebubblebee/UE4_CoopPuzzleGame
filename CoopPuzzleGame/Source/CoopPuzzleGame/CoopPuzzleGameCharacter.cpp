@@ -73,3 +73,8 @@ void ACoopPuzzleGameCharacter::MoveRight(float Value)
 		AddMovementInput(Direction, Value);
 	}
 }
+
+void ACoopPuzzleGameCharacter::HandleInteractInput()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ACoopPuzzleGameCharacter::HandleInteractInput Called"));
+}
