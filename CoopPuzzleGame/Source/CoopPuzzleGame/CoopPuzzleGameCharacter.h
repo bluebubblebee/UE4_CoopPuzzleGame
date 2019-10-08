@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interactives/Interact.h"
 #include "CoopPuzzleGameCharacter.generated.h"
 
 UCLASS(Blueprintable)
-class ACoopPuzzleGameCharacter : public ACharacter
+class ACoopPuzzleGameCharacter : public ACharacter, public IInteract
 {
 	GENERATED_BODY()
 
@@ -39,5 +40,18 @@ public:
 	void MoveRight(float Value);
 
 	void HandleInteractInput();
+
+
+public:
+
+	//// INTERFACE IInteract IMPLEMENTATION ////////////////////
+	virtual void NotifyInInteractRange(AActor* Interactive) override;
+
+	virtual void NotifyLeaveInteractRange(AActor* Interactive) override;
+	//// INTERFACE IInteract IMPLEMENTATION ////////////////////
+
+protected:
+
+	class ABasicInteractive* CurrentInteractive;
 };
 

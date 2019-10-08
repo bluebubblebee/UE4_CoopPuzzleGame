@@ -10,6 +10,8 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 
+#include "Interactives/BasicInteractive.h"
+
 ACoopPuzzleGameCharacter::ACoopPuzzleGameCharacter()
 {
 	// Set size for player capsule
@@ -78,3 +80,31 @@ void ACoopPuzzleGameCharacter::HandleInteractInput()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ACoopPuzzleGameCharacter::HandleInteractInput Called"));
 }
+
+
+
+//// INTERFACE IInteract IMPLEMENTATION ////////////////////
+void ACoopPuzzleGameCharacter::NotifyInInteractRange(AActor* Interactive)
+{
+	if (IsLocallyControlled())
+	{
+		// Keeps the Interactive reference
+		if ((Interactive != nullptr) && (CurrentInteractive == nullptr))
+		{
+			CurrentInteractive = Cast<ABasicInteractive>(Interactive);
+		}
+	}
+}
+
+void ACoopPuzzleGameCharacter::NotifyLeaveInteractRange(AActor* Interactive)
+{
+	if (IsLocallyControlled())
+	{
+		// Release the Interactive reference
+		if (CurrentInteractive != nullptr)
+		{
+			CurrentInteractive = nullptr;
+		}
+	}
+}
+//// INTERFACE IInteract IMPLEMENTATION ////////////////////
