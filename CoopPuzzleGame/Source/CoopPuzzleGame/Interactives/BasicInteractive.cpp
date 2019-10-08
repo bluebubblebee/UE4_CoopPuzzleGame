@@ -43,6 +43,12 @@ void ABasicInteractive::Tick(float DeltaTime)
 
 }
 
+void ABasicInteractive::StartInteracting(APawn* PawnInstigator)
+{
+	UE_LOG(LogTemp, Warning, TEXT("ABasicInteractive::StartInteracting called"));
+}
+
+
 void ABasicInteractive::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
 {
 	// Check if the interactive already have a character overlapping

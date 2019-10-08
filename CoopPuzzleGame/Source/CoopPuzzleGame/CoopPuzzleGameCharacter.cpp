@@ -78,7 +78,12 @@ void ACoopPuzzleGameCharacter::MoveRight(float Value)
 
 void ACoopPuzzleGameCharacter::HandleInteractInput()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ACoopPuzzleGameCharacter::HandleInteractInput Called"));
+	if (IsLocallyControlled() && (CurrentInteractive != nullptr))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ACoopPuzzleGameCharacter::HandleInteractInput Calling StartInteract"));
+
+		CurrentInteractive->StartInteracting(this);
+	}
 }
 
 

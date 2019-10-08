@@ -36,6 +36,8 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void StartInteracting(APawn* PawnInstigator);
+
 protected:
 
 	class ACoopPuzzleGameCharacter* CharacterOverlapping = nullptr;
