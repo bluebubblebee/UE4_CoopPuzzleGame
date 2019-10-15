@@ -24,6 +24,10 @@ protected:
 
 	void DoActivatedAction();
 
+	// Event only implemented on a blueprint
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnMechanismActivatedEvent();
+
 public:
 
 	virtual void StartInteracting(APawn* PawnInstigator) override;

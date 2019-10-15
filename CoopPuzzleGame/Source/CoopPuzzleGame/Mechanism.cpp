@@ -44,6 +44,9 @@ void AMechanism::DoActivatedAction()
 	UE_LOG(LogTemp, Warning, TEXT("[AMechanism::ServerDoActivatedAction]"));
 
 	bIsActivated = true;
+
+	// Call the event
+	OnMechanismActivatedEvent();
 }
 
 
