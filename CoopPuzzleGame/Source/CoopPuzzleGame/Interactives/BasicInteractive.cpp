@@ -8,7 +8,7 @@
 
 // Sets default values
 ABasicInteractive::ABasicInteractive()
-{
+{ 
 	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = RootScene;
 
