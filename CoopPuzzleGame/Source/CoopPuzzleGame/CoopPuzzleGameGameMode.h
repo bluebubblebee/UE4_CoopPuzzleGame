@@ -13,6 +13,19 @@ class ACoopPuzzleGameGameMode : public AGameModeBase
 
 public:
 	ACoopPuzzleGameGameMode();
+
+protected:
+
+	virtual void BeginPlay() override;
+
+private:
+
+	// List of interactives in the current level
+	TArray<class ABasicInteractive*> InteractiveInLevelList;
+
+private:
+	// Gets interactives in level
+	void GetInteractivesInLevel();
 };
 
 

@@ -49,5 +49,13 @@ protected:
 
 	UFUNCTION()
 	void EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
+protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FName ID;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FName ConnectedInteractiveID;
 
 };

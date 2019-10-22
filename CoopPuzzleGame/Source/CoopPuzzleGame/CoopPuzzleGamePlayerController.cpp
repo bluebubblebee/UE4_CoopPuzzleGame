@@ -20,7 +20,6 @@ void ACoopPuzzleGamePlayerController::BeginPlay()
 	APawn* const pawn = GetPawn();
 	if (pawn != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[ACoopPuzzleGamePlayerController::BeginPlay] APawn not null"));
 		myCharacter = Cast<ACoopPuzzleGameCharacter>(pawn);
 	}
 
