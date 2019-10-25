@@ -38,6 +38,10 @@ public:
 
 	virtual void StartInteracting(APawn* PawnInstigator);
 
+	virtual ABasicInteractive* GetConnectedInteractive();
+
+	virtual void SendSignalToInteractive();
+
 protected:
 
 	class ACoopPuzzleGameCharacter* CharacterOverlapping = nullptr;
@@ -50,7 +54,7 @@ protected:
 	UFUNCTION()
 	void EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
-protected:
+public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName ID;

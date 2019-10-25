@@ -14,6 +14,8 @@ class ACoopPuzzleGameGameMode : public AGameModeBase
 public:
 	ACoopPuzzleGameGameMode();
 
+	class ABasicInteractive* FindInteractiveById(const FName& ID) const;
+
 protected:
 
 	virtual void BeginPlay() override;

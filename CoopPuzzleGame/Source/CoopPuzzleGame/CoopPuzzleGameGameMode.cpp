@@ -49,3 +49,16 @@ void ACoopPuzzleGameGameMode::GetInteractivesInLevel()
 
 	UE_LOG(LogTemp, Warning, TEXT("[ARoomGameMode::GetInteractablesInRoom] InteractableList Num: %i "), InteractiveInLevelList.Num());
 }
+
+ABasicInteractive* ACoopPuzzleGameGameMode::FindInteractiveById(const FName& ID) const
+{
+	for (int32 i = 0; i < InteractiveInLevelList.Num(); i++)
+	{
+		if (InteractiveInLevelList[i]->ConnectedInteractiveID == ID)
+		{
+			return InteractiveInLevelList[i];
+		}
+	}
+
+	return nullptr;
+}

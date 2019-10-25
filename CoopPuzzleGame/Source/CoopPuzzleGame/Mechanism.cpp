@@ -47,6 +47,18 @@ void AMechanism::DoActivatedAction()
 
 	// Call the event
 	OnMechanismActivatedEvent();
+
+	ABasicInteractive* interactive = GetConnectedInteractive();
+
+	if (interactive != nullptr)
+	{
+		interactive->SendSignalToInteractive();
+		UE_LOG(LogTemp, Warning, TEXT("[ASwitchBI::DoToggleAction] Connected Interactive found"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ASwitchInteractive::Toggle] Connected Interactive not found "));
+	}
 }
 
 

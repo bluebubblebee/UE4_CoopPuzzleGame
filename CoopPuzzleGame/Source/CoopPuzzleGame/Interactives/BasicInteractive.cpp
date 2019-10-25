@@ -4,6 +4,7 @@
 #include "BasicInteractive.h"
 #include "CoopPuzzleGameCharacter.h"
 #include "Components/BoxComponent.h"
+#include "CoopPuzzleGameGameMode.h"
 
 
 // Sets default values
@@ -46,6 +47,21 @@ void ABasicInteractive::Tick(float DeltaTime)
 void ABasicInteractive::StartInteracting(APawn* PawnInstigator)
 {
 	UE_LOG(LogTemp, Warning, TEXT("ABasicInteractive::StartInteracting called"));
+}
+
+void ABasicInteractive::SendSignalToInteractive()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ABasicInteractive::SendSignalToInteractive called"));
+}
+
+ABasicInteractive* ABasicInteractive::GetConnectedInteractive()
+{
+	if (ConnectedInteractiveID == "NONE") return nullptr;
+
+	ACoopPuzzleGameGameMode* GM = Cast<ACoopPuzzleGameGameMode>(GetWorld()->GetAuthGameMode());
+	if (GM == nullptr) return  nullptr;
+
+	return GM->FindInteractiveById(ConnectedInteractiveID);
 }
 
 
