@@ -14,6 +14,7 @@ class COOPPUZZLEGAME_API ADoor : public ABasicInteractive
 {
 	GENERATED_BODY()
 
+
 protected:
 
 	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Mechanism")
