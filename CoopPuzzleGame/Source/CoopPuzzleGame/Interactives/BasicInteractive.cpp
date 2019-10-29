@@ -59,9 +59,12 @@ ABasicInteractive* ABasicInteractive::GetConnectedInteractive()
 	if (ConnectedInteractiveID == "NONE") return nullptr;
 
 	ACoopPuzzleGameGameMode* GM = Cast<ACoopPuzzleGameGameMode>(GetWorld()->GetAuthGameMode());
+
 	if (GM == nullptr) return  nullptr;
 
-	return GM->FindInteractiveById(ConnectedInteractiveID);
+     ABasicInteractive* interactive = GM->FindInteractiveById(ConnectedInteractiveID);
+
+	return interactive;
 }
 
 

@@ -4,6 +4,23 @@
 #include "Door.h"
 #include "UnrealNetwork.h"
 
+ADoor::ADoor()
+{
+	ObjectToToggle = CreateDefaultSubobject<USceneComponent>(TEXT("ObjectToToggle"));
+	ObjectToToggle->SetupAttachment(RootComponent);
+}
+
+
+void ADoor::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (ObjectToToggle == nullptr) return;
+
+	ObjectToToggle->SetVisibility(false, true);
+}
+
+
 void ADoor::StartInteracting(APawn* PawnInstigator)
 {
 	Super::StartInteracting(PawnInstigator);
@@ -16,7 +33,9 @@ void ADoor::StartInteracting(APawn* PawnInstigator)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[ADoor::StartInteracting] bIsOpen == false we can go in"));
 	}
+	
 }
+
 
 void ADoor::SendSignalToInteractive()
 {
@@ -60,7 +79,23 @@ void ADoor::DoActivatedAction()
 
 	bIsOpen = true;	
 	OnDoorOpenedEvent();
+	OnRep_IsOpenChanged();
 }
+
+
+void ADoor::OnRep_IsOpenChanged()
+{
+	if (bIsOpen)
+	{
+		ObjectToToggle->SetVisibility(true, true);
+	}
+	else
+	{
+		ObjectToToggle->SetVisibility(false, true);
+
+	}
+}
+
 
 void ADoor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {

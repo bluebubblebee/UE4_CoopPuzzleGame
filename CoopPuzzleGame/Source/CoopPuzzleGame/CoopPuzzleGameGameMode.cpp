@@ -54,8 +54,10 @@ ABasicInteractive* ACoopPuzzleGameGameMode::FindInteractiveById(const FName& ID)
 {
 	for (int32 i = 0; i < InteractiveInLevelList.Num(); i++)
 	{
-		if (InteractiveInLevelList[i]->ConnectedInteractiveID == ID)
+		if (InteractiveInLevelList[i]->ID == ID)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("[ARoomGameMode::FindInteractiveById] Interactive: %s "), *InteractiveInLevelList[i]->GetName());
+
 			return InteractiveInLevelList[i];
 		}
 	}

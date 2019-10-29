@@ -17,7 +17,7 @@ void AMechanism::StartInteracting(APawn* PawnInstigator)
 		// Check my role, if I am not the server-client call the server
 		if (Role < ROLE_Authority)
 		{
-			ServerDoActivatedAction(); 
+			ServerDoActivatedAction();  
 		}
 		else
 		{
@@ -43,16 +43,13 @@ void AMechanism::DoActivatedAction()
 {
 	UE_LOG(LogTemp, Warning, TEXT("[AMechanism::ServerDoActivatedAction]"));
 
-	bIsActivated = true;
-
-	// Call the event
-	OnMechanismActivatedEvent();
+	bIsActivated = true;	
 
 	ABasicInteractive* interactive = GetConnectedInteractive();
 
 	if (interactive != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AMechanism::DoActivatedAction] Connected Interactive found called SendSignalToInteractive: %s "), *interactive->ConnectedInteractiveID.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("[AMechanism::DoActivatedAction] Connected Interactive found called SendSignalToInteractive: %s "), *interactive->GetName());
 		
 		interactive->SendSignalToInteractive();		
 	}
@@ -60,6 +57,9 @@ void AMechanism::DoActivatedAction()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[AMechanism::DoActivatedAction] Connected Interactive not found "));
 	}
+
+// Call the event
+	OnMechanismActivatedEvent();
 }
 
 

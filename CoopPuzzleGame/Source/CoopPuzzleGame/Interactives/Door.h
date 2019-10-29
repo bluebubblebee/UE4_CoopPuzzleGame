@@ -15,10 +15,24 @@ class COOPPUZZLEGAME_API ADoor : public ABasicInteractive
 	GENERATED_BODY()
 
 
+public:
+	ADoor();
+
+protected:
+	virtual void BeginPlay() override;
+
 protected:
 
-	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Mechanism")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Door")
+	class USceneComponent* ObjectToToggle;
+
+
+	UPROPERTY(ReplicatedUsing = OnRep_IsOpenChanged, EditDefaultsOnly, Category = "Door")
 	bool bIsOpen = false;
+
+	// Event when bIsOpenChanges
+	UFUNCTION()
+	void OnRep_IsOpenChanged();
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerDoActivatedAction();
