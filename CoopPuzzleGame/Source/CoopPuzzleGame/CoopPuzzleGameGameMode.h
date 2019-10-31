@@ -28,6 +28,16 @@ private:
 private:
 	// Gets interactives in level
 	void GetInteractivesInLevel();
+
+
+
+public:
+
+	void CompletedRoom(APawn* InstigatorPawn, bool bSuccess);
+
+	// Blueprint event
+	UFUNCTION(BlueprintImplementableEvent, Category = "GamePlay Mode", meta = (DisplayName = "Room Completed"))
+	void OnRoomCompleted(APawn* InstigatorPawn, bool bSuccess);
 };
 
 

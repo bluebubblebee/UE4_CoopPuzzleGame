@@ -12,7 +12,7 @@
 
 #include "Interactives/BasicInteractive.h"
 
-ACoopPuzzleGameCharacter::ACoopPuzzleGameCharacter()
+ACoopPuzzleGameCharacter::ACoopPuzzleGameCharacter() 
 {
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);

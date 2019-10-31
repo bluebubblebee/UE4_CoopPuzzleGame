@@ -3,10 +3,13 @@
 #include "CoopPuzzleGameGameMode.h"
 #include "CoopPuzzleGamePlayerController.h"
 #include "CoopPuzzleGameCharacter.h"
+#include "CoopPuzzleGameState.h"
+#include "Interactives/BasicInteractive.h"
+
 #include "UObject/ConstructorHelpers.h"
 
 #include "Kismet/GameplayStatics.h"
-#include "Interactives/BasicInteractive.h"
+
 
 
 ACoopPuzzleGameGameMode::ACoopPuzzleGameGameMode()
@@ -63,4 +66,22 @@ ABasicInteractive* ACoopPuzzleGameGameMode::FindInteractiveById(const FName& ID)
 	}
 
 	return nullptr;
+}
+
+
+void ACoopPuzzleGameGameMode::CompletedRoom(APawn* InstigatorPawn, bool bSuccess)
+{
+	if (InstigatorPawn == nullptr) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("[AMainGameMode::CompletedRoom] Called"));
+
+	// Called EscapeRoom to change the state of the game and let everyone know the new state
+	ACoopPuzzleGameState* GameState = GetGameState<ACoopPuzzleGameState>();
+
+	if (GameState == nullptr) return;
+	GameState->MulticastOnRoomCompleted(InstigatorPawn, bSuccess);
+
+	UE_LOG(LogTemp, Warning, TEXT("[AMainGameMode::OnRoomCompleted] CALLING"));
+	OnRoomCompleted(InstigatorPawn, bSuccess);
+
 }
