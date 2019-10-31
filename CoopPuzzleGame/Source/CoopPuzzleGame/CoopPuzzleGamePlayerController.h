@@ -38,6 +38,15 @@ protected:
 	void FaceButtonBottom();
 
 	///// Input Actions //////
+
+	bool bInputLocked;
+
+public: 
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Player Controller")
+	void OnRoomCompleted(APawn* InstigatorPawn, bool bSuccess);
+
+	void LockInput();
 };
 
 

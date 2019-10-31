@@ -23,6 +23,8 @@ ACoopPuzzleGameGameMode::ACoopPuzzleGameGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+
+	GameStateClass = ACoopPuzzleGameState::StaticClass();
 }
 
 void ACoopPuzzleGameGameMode::BeginPlay()
@@ -68,20 +70,23 @@ ABasicInteractive* ACoopPuzzleGameGameMode::FindInteractiveById(const FName& ID)
 	return nullptr;
 }
 
-
+// This code only runs on the server, there is no instances of the game mode on the client only on the server
 void ACoopPuzzleGameGameMode::CompletedRoom(APawn* InstigatorPawn, bool bSuccess)
 {
 	if (InstigatorPawn == nullptr) return;
 
-	UE_LOG(LogTemp, Warning, TEXT("[AMainGameMode::CompletedRoom] Called"));
 
 	// Called EscapeRoom to change the state of the game and let everyone know the new state
+	// We can get the game state from the game mode
 	ACoopPuzzleGameState* GameState = GetGameState<ACoopPuzzleGameState>();
 
-	if (GameState == nullptr) return;
-	GameState->MulticastOnRoomCompleted(InstigatorPawn, bSuccess);
+	if (GameState != nullptr)
+	{
+		// Call multicast
+		GameState->MulticastOnRoomCompleted(InstigatorPawn, bSuccess);
+	}
 
-	UE_LOG(LogTemp, Warning, TEXT("[AMainGameMode::OnRoomCompleted] CALLING"));
-	OnRoomCompleted(InstigatorPawn, bSuccess);
+	//UE_LOG(LogTemp, Warning, TEXT("[AMainGameMode::OnRoomCompleted Event] Called"));
+	//OnRoomCompleted(InstigatorPawn, bSuccess);
 
 }

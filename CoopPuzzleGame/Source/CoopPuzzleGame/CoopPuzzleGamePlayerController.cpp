@@ -23,11 +23,18 @@ void ACoopPuzzleGamePlayerController::BeginPlay()
 		myCharacter = Cast<ACoopPuzzleGameCharacter>(pawn);
 	}
 
+	bInputLocked = false;
+
 }
 
 void ACoopPuzzleGamePlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
+}
+
+void ACoopPuzzleGamePlayerController::LockInput()
+{
+	bInputLocked = true;
 }
 
 void ACoopPuzzleGamePlayerController::SetupInputComponent()
@@ -45,6 +52,8 @@ void ACoopPuzzleGamePlayerController::SetupInputComponent()
 
 void ACoopPuzzleGamePlayerController::MoveForward(float Value)
 {
+	if (bInputLocked) return;
+
 	if (Value == 0.0f) return;
 
 	if (myCharacter != nullptr)
@@ -55,6 +64,8 @@ void ACoopPuzzleGamePlayerController::MoveForward(float Value)
 
 void ACoopPuzzleGamePlayerController::MoveRight(float Value)
 {
+	if (bInputLocked) return;
+
 	if (Value == 0.0f) return;
 
 	// The character is in charge of moving the mesh not the player controller
@@ -67,6 +78,7 @@ void ACoopPuzzleGamePlayerController::MoveRight(float Value)
 
 void ACoopPuzzleGamePlayerController::FaceButtonBottom()
 {
+	if (bInputLocked) return;
 	if (myCharacter != nullptr)
 	{
 		myCharacter->HandleInteractInput();

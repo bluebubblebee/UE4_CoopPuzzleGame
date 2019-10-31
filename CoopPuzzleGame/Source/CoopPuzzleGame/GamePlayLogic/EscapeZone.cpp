@@ -6,6 +6,7 @@
 #include "CoopPuzzleGameCharacter.h"
 #include "CoopPuzzleGamePlayerController.h"
 #include "CoopPuzzleGameGameMode.h"
+#include "UnrealNetwork.h"
 
 
 AEscapeZone::AEscapeZone()
@@ -42,33 +43,31 @@ void AEscapeZone::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 
 	UE_LOG(LogTemp, Warning, TEXT("AEscapeZone::HandleOverlap"));
 
-	ACoopPuzzleGameCharacter * Character = Cast<ACoopPuzzleGameCharacter>(OtherActor);
-	if ((Character == nullptr) || (Character->GetController() == nullptr)) return;
+	ACoopPuzzleGameCharacter * Pawn = Cast<ACoopPuzzleGameCharacter>(OtherActor);
 
+	if (Pawn == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Pawn is null"));
+		return;
+	}
 
-	//ACoopPuzzleGamePlayerController* GamePC = Cast<ACoopPuzzleGamePlayerController>(Character->GetController());
-	//if (GamePC == nullptr) return;
+	//Pawn->DisableInput(nullptr);
 
 	PlayerCount++;
 
-	UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Character %s, %i"), *Character->GetName(), PlayerCount);
-
-	if (OtherActor->Role == ROLE_Authority)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Is Server"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Is Server"));
-	}
+	UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Character %s, %i"), *Pawn->GetName(), PlayerCount);
 
 	if (PlayerCount >= 2)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] All players in zone"));
 
-		// Get Game Mode
 		UWorld* World = GetWorld();
-		if (World == nullptr) return;
+		if (World == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Get World is null"));
+			return;
+		}
+
+
 		ACoopPuzzleGameGameMode* GameMode = Cast<ACoopPuzzleGameGameMode>(World->GetAuthGameMode());
 
 		if (GameMode == nullptr)
@@ -77,11 +76,54 @@ void AEscapeZone::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 			return;
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] GameMode NOT NULL"));
-		GameMode->CompletedRoom(Character, true);
-
+		if (GameMode != nullptr)
+		{
+			GameMode->CompletedRoom(Pawn, true);
+		}
 	}
 
+	//UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] GameMode NOT NULL"));
+	// This is not going to be called on the client, only on the server
+	//GameMode->CompletedRoom(Pawn, true);
+
+	/*if (OtherActor->Role == ROLE_Authority)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Is Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Is Server"));
+	}*/
+
+	//if (PlayerCount >= 2)
+	//{
+		//UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] All players in zone"));
+
+		// Get Game Mode
+		//UWorld* World = GetWorld();
+		//if (World == nullptr) return;
+
+		// World->GetAuthGameMode() only valid when you call it on the server
+		// This will not exist on the client, it will return null
+		//ACoopPuzzleGameGameMode* GameMode = Cast<ACoopPuzzleGameGameMode>(World->GetAuthGameMode());
+
+		//if (GameMode == nullptr)
+		//{
+			//UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] GameMode NULL"));
+			//return;
+		//}
+
+		
+
+	//}
+
+}
+
+void AEscapeZone::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AEscapeZone, PlayerCount);
 }
 
 

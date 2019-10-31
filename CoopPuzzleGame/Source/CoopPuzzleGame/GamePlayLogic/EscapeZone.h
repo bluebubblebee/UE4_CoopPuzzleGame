@@ -38,7 +38,11 @@ public:
 
 private:
 
+	
+
+	UPROPERTY(Replicated, EditDefaultsOnly, Category = "EscapeZone")
 	int32 PlayerCount;
+
 
 
 };
