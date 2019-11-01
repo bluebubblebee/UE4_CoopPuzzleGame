@@ -36,13 +36,8 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-private:
-
-	
+private:	
 
 	UPROPERTY(Replicated, EditDefaultsOnly, Category = "EscapeZone")
 	int32 PlayerCount;
-
-
-
 };

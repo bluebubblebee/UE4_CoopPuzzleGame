@@ -10,7 +10,7 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 
-#include "Interactives/BasicInteractive.h"
+#include "Interactives/BasicInteractive.h" 
 
 ACoopPuzzleGameCharacter::ACoopPuzzleGameCharacter() 
 {

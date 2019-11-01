@@ -41,21 +41,16 @@ void AEscapeZone::Tick(float DeltaTime)
 void AEscapeZone::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-	UE_LOG(LogTemp, Warning, TEXT("AEscapeZone::HandleOverlap"));
-
 	ACoopPuzzleGameCharacter * Pawn = Cast<ACoopPuzzleGameCharacter>(OtherActor);
 
 	if (Pawn == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Pawn is null"));
 		return;
 	}
 
-	//Pawn->DisableInput(nullptr);
-
 	PlayerCount++;
 
-	UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Character %s, %i"), *Pawn->GetName(), PlayerCount);
+	//UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Character %s, %i"), *Pawn->GetName(), PlayerCount);
 
 	if (PlayerCount >= 2)
 	{
@@ -78,44 +73,9 @@ void AEscapeZone::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 
 		if (GameMode != nullptr)
 		{
-			GameMode->CompletedRoom(Pawn, true);
+			//GameMode->CompletedRoom(Pawn, true);
 		}
 	}
-
-	//UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] GameMode NOT NULL"));
-	// This is not going to be called on the client, only on the server
-	//GameMode->CompletedRoom(Pawn, true);
-
-	/*if (OtherActor->Role == ROLE_Authority)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Is Server"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Is Server"));
-	}*/
-
-	//if (PlayerCount >= 2)
-	//{
-		//UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] All players in zone"));
-
-		// Get Game Mode
-		//UWorld* World = GetWorld();
-		//if (World == nullptr) return;
-
-		// World->GetAuthGameMode() only valid when you call it on the server
-		// This will not exist on the client, it will return null
-		//ACoopPuzzleGameGameMode* GameMode = Cast<ACoopPuzzleGameGameMode>(World->GetAuthGameMode());
-
-		//if (GameMode == nullptr)
-		//{
-			//UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] GameMode NULL"));
-			//return;
-		//}
-
-		
-
-	//}
 
 }
 
