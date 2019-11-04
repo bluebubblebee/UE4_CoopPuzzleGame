@@ -58,10 +58,8 @@ void AEscapeZone::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 		UWorld* World = GetWorld();
 		if (World == nullptr)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Get World is null"));
 			return;
 		}
-
 
 		ACoopPuzzleGameGameMode* GameMode = Cast<ACoopPuzzleGameGameMode>(World->GetAuthGameMode());
 
@@ -73,7 +71,9 @@ void AEscapeZone::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 
 		if (GameMode != nullptr)
 		{
-			//GameMode->CompletedRoom(Pawn, true);
+
+			UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] GameMode NOT NULL"));
+			GameMode->CompletedRoom(Pawn, true);
 		}
 	}
 
