@@ -83,10 +83,6 @@ void ACoopPuzzleGameGameMode::CompletedRoom(APawn* InstigatorPawn, bool bSuccess
 	if (GameState != nullptr)
 	{
 		// Call multicast
-		GameState->MulticastOnRoomCompleted(InstigatorPawn, bSuccess);
+		GameState->MulticastOnRoomCompleted(InstigatorPawn);
 	}
-
-	//UE_LOG(LogTemp, Warning, TEXT("[AMainGameMode::OnRoomCompleted Event] Called"));
-	//OnRoomCompleted(InstigatorPawn, bSuccess);
-
 }

@@ -44,7 +44,7 @@ protected:
 public: 
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Player Controller")
-	void OnRoomCompleted(APawn* InstigatorPawn, bool bSuccess);
+	void OnRoomCompleted(APawn* InstigatorPawn);
 
 	void LockInput();
 };

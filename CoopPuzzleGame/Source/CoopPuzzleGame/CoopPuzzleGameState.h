@@ -18,6 +18,6 @@ public:
 
 	// This runs in all the clients
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastOnRoomCompleted(APawn* InstigatorPawn, bool bSuccess);
+	void MulticastOnRoomCompleted(APawn* InstigatorPawn);
 	
 };

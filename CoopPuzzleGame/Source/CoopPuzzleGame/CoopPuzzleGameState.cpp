@@ -4,10 +4,9 @@
 #include "CoopPuzzleGameState.h"
 #include "CoopPuzzleGamePlayerController.h"
 
-void ACoopPuzzleGameState::MulticastOnRoomCompleted_Implementation(APawn* InstigatorPawn, bool bSuccess)
+void ACoopPuzzleGameState::MulticastOnRoomCompleted_Implementation(APawn* InstigatorPawn)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("[MulticastOnRoomCompleted_Implementation] CALLED"));
-	
 
 	// Iterates on all player controllers available and calls OnRoomCompleted
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
@@ -20,7 +19,7 @@ void ACoopPuzzleGameState::MulticastOnRoomCompleted_Implementation(APawn* Instig
 			//UE_LOG(LogTemp, Warning, TEXT("[MulticastOnRoomCompleted_Implementation] CALLED %s"), *PC->GetName());
 
 			// Calls the method, and this will call the event, so the player controller can show the UI
-			PC->OnRoomCompleted(InstigatorPawn, bSuccess);
+			PC->OnRoomCompleted(InstigatorPawn);
 
 			PC->LockInput();
 		}
