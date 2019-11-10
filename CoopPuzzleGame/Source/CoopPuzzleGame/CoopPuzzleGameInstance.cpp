@@ -100,6 +100,30 @@ void UCoopPuzzleGameInstance::OnJoinSessionsComplete(FName SessionName, EOnJoinS
 void UCoopPuzzleGameInstance::Host(FString ServerName)
 {
 
+	//DesiredServerName = ServerName;
+
+	if (SessionInterface.IsValid())
+	{
+		// Checks for an existing session
+		auto ExistingSession = SessionInterface->GetNamedSession(SESSION_NAME);
+
+		if (ExistingSession != nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::Host] There is an existing session about to remove the current one"));			
+
+			SessionInterface->DestroySession(SESSION_NAME);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::Host] About to create session"));			
+
+			CreateSession();
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::Host] SessionInterface invalid"));
+	}
 }
 
 void UCoopPuzzleGameInstance::JoinSession(uint32 Index)

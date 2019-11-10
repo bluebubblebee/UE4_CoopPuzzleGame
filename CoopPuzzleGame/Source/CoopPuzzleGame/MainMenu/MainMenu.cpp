@@ -4,6 +4,10 @@
 #include "MainMenu.h"
 #include "CoopPuzzleGamePlayerController.h"
 
+#include "Components/WidgetSwitcher.h"
+#include "Components/Button.h"
+#include "Components/TextBlock.h"
+
 
 /*UMainMenu::UMainMenu(const FObjectInitializer & ObjectInitializer)
 {
@@ -16,6 +20,11 @@ bool UMainMenu::Initialize()
 
 	if (!Success) return false;
 
+	if (NewSessionButton == nullptr) return false;
+	NewSessionButton->OnClicked.AddDynamic(this, &UMainMenu::OnNewSessionPressed);
+
+	if (JoinSessionButton == nullptr) return false;
+	JoinSessionButton->OnClicked.AddDynamic(this, &UMainMenu::OnJoinSessionPressed);
 
 	return true;
 }
@@ -60,5 +69,18 @@ void UMainMenu::Teardown()
 	PlayerController->SetInputMode(InputModeData);
 	PlayerController->UnLockInput();
 	PlayerController->bShowMouseCursor = false;
+}
+
+
+
+void UMainMenu::OnNewSessionPressed()
+{
+	if (SessionMenuInterface == nullptr) return;
+	SessionMenuInterface->Host("CoopPuzzleGameServer");
+}
+
+void UMainMenu::OnJoinSessionPressed()
+{
+	if (SessionMenuInterface == nullptr) return;
 }
 

@@ -31,6 +31,20 @@ protected:
 	ISessionMenuInterface* SessionMenuInterface;
 
 
+protected:
+
+	// Link to buttons
+	UPROPERTY(meta = (BindWidget))
+	class UButton* NewSessionButton;
+
+	UFUNCTION()
+	void OnNewSessionPressed();
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* JoinSessionButton;
+
+	UFUNCTION()
+	void OnJoinSessionPressed();
 
 	
 };
