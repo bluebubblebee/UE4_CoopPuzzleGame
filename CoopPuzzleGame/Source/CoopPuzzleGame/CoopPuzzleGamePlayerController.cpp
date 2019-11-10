@@ -37,6 +37,11 @@ void ACoopPuzzleGamePlayerController::LockInput()
 	bInputLocked = true;
 }
 
+void ACoopPuzzleGamePlayerController::UnLockInput()
+{
+	bInputLocked = false;
+}
+
 void ACoopPuzzleGamePlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();

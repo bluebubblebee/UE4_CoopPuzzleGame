@@ -2,8 +2,13 @@
 
 
 #include "CoopPuzzleGameInstance.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Blueprint/UserWidget.h"
+
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystemTypes.h"
+
+#include "MainMenu/MainMenu.h"
 
 
 const static FName SESSION_NAME = TEXT("CoopPuzzleGameSession");
@@ -11,7 +16,13 @@ const static FName SERVER_NAME_SETTINGS_KEY = TEXT("ServerName");
 
 UCoopPuzzleGameInstance::UCoopPuzzleGameInstance(const FObjectInitializer & ObjectInitializer)
 {
+	// Initialize main menu
+	static ConstructorHelpers::FClassFinder<UUserWidget> MenuBPClass(TEXT("/Game/CoopPuzzleGame/MainMenu/WBP_MainMenu"));
 
+	if (MenuBPClass.Class != nullptr)
+	{
+		MenuClass = MenuBPClass.Class;
+	}
 }
 
 
@@ -45,6 +56,17 @@ void UCoopPuzzleGameInstance::Init()
 	}
 }
 
+void UCoopPuzzleGameInstance::LoadMainMenu()
+{
+	if(MenuClass == nullptr) return;
+
+	MainMenu = CreateWidget<UMainMenu>(this, MenuClass);
+	if (MainMenu == nullptr) return;
+
+	MainMenu->Setup(this);
+
+}
+
 
 void UCoopPuzzleGameInstance::CreateSession()
 {
@@ -72,6 +94,24 @@ void UCoopPuzzleGameInstance::OnJoinSessionsComplete(FName SessionName, EOnJoinS
 
 
 }
+
+
+///// ISessionMenuInterface /////////////////// 
+void UCoopPuzzleGameInstance::Host(FString ServerName)
+{
+
+}
+
+void UCoopPuzzleGameInstance::JoinSession(uint32 Index)
+{
+
+}
+
+void UCoopPuzzleGameInstance::EndSession()
+{
+
+}
+///// ISessionMenuInterface /////////////////// 
 
 
 

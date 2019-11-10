@@ -47,6 +47,8 @@ public:
 	void OnRoomCompleted(APawn* InstigatorPawn);
 
 	void LockInput();
+
+	void UnLockInput();
 };
 
 
