@@ -68,16 +68,45 @@ void UCoopPuzzleGameInstance::LoadMainMenu()
 }
 
 
-void UCoopPuzzleGameInstance::CreateSession()
-{
-	UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::CreateSession] Creating %s"), *SESSION_NAME.ToString());
-}
 
 
+///// Session Handling events /////////////////// 
 void UCoopPuzzleGameInstance::OnCreateSessionComplete(FName SessionName, bool Success)
 {
+	// It will not be success if there are more than one session with the same name already created
+	if (!Success)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::OnCreateSessionComplete] UNSUCESS"));
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[UNetTileMazeGameInstance::OnCreateSessionComplete] SUCESS SessionName: %s"), *SessionName.ToString());
+
+	// Teardown Menu and change levels
+	if (MainMenu != nullptr)
+	{
+		MainMenu->Teardown();
+	}
+
+	UEngine* Engine = GetEngine();
+
+	if (Engine == nullptr) return;
+
+	Engine->AddOnScreenDebugMessage(0, 2, FColor::Green, TEXT("[OnCreateSessionComplete::Host]"));
+
+	UE_LOG(LogTemp, Warning, TEXT("[OnCreateSessionComplete::OnCreateSessionComplete] HOST TRAVEL TO LOBBY"));
+
+	UWorld* World = GetWorld();
+
+	if (World == nullptr) return;
+
+	//bUseSeamlessTravel = true;
+	World->ServerTravel("/Game/CoopPuzzleGame/Maps/Level1?listen");
 
 }
+
+
+
 
 void UCoopPuzzleGameInstance::OnFindSessionsComplete(bool Success)
 {
@@ -86,7 +115,17 @@ void UCoopPuzzleGameInstance::OnFindSessionsComplete(bool Success)
 
 void UCoopPuzzleGameInstance::OnDestroySessionComplete(FName SessionName, bool Success)
 {
+	if (Success)
+	{		
+		UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::OnDestroySessionComplete] Success "));
+		CreateSession();
+	}
+	else
+	{
+		
 
+		UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::OnDestroySessionComplete] NO Success "));
+	}
 }
 
 void UCoopPuzzleGameInstance::OnJoinSessionsComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
@@ -95,12 +134,13 @@ void UCoopPuzzleGameInstance::OnJoinSessionsComplete(FName SessionName, EOnJoinS
 
 }
 
+///// ISessionMenuInterface /////////////////// 
+
 
 ///// ISessionMenuInterface /////////////////// 
 void UCoopPuzzleGameInstance::Host(FString ServerName)
 {
-
-	//DesiredServerName = ServerName;
+	DesiredServerName = ServerName;
 
 	if (SessionInterface.IsValid())
 	{
@@ -117,7 +157,9 @@ void UCoopPuzzleGameInstance::Host(FString ServerName)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::Host] About to create session"));			
 
+			// Create a new session
 			CreateSession();
+			
 		}
 	}
 	else
@@ -137,20 +179,33 @@ void UCoopPuzzleGameInstance::EndSession()
 }
 ///// ISessionMenuInterface /////////////////// 
 
-
-
-/*
-void UCoopPuzzleGameInstance::Host(FString ServerName)
+void UCoopPuzzleGameInstance::CreateSession()
 {
+	UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::CreateSession] Creating %s"), *SESSION_NAME.ToString());
 
+	if (SessionInterface.IsValid())
+	{
+		FOnlineSessionSettings SessionSettings;
+
+		// Switch between bIsLANMatch when using NULL subsystem
+		if (IOnlineSubsystem::Get()->GetSubsystemName().ToString() == "NULL")
+		{
+			SessionSettings.bIsLANMatch = true;
+		}
+		else
+		{
+			SessionSettings.bIsLANMatch = false;
+		}
+
+		// Number of sessions
+		SessionSettings.NumPublicConnections = 2;
+		SessionSettings.bShouldAdvertise = true;
+		SessionSettings.bUsesPresence = true;
+		SessionSettings.Set(SERVER_NAME_SETTINGS_KEY, DesiredServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+
+		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
+	}
 }
 
 
-void UCoopPuzzleGameInstance::JoinSession(uint32 Index)
-{
-
-
-}
-
-*/
 
