@@ -1,0 +1,6 @@
+
+
+Run a game with Steam
+
+"D:\Software\Unreal\Epic Games\UE_4.22\Engine\Binaries\Win64\UE4Editor.exe" "D:\Github\UE4\UE4_CoopPuzzleGame\CoopPuzzleGame\CoopPuzzleGame.uproject" -game -log
+

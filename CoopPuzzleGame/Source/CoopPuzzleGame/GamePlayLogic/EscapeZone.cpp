@@ -11,7 +11,7 @@
 
 AEscapeZone::AEscapeZone()
 {
-	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("Root")); 
 	RootComponent = RootScene;
 
 	Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));

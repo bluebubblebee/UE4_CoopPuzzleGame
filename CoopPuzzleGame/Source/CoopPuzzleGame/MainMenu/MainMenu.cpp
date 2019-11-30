@@ -4,15 +4,12 @@
 #include "MainMenu.h"
 #include "CoopPuzzleGamePlayerController.h"
 
+#include "UObject/ConstructorHelpers.h"
+
 #include "Components/WidgetSwitcher.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 
-
-/*UMainMenu::UMainMenu(const FObjectInitializer & ObjectInitializer)
-{
-
-}*/
 
 bool UMainMenu::Initialize()
 {
@@ -20,11 +17,25 @@ bool UMainMenu::Initialize()
 
 	if (!Success) return false;
 
+	//ConstructorHelpers::FClassFinder<UUserWidget> SessionRowBPClass(TEXT("/Game/CoopPuzzleGame/MainMenu/WBP_SessionRow"));
+	//if (SessionRowBPClass.Class == nullptr) return false;
+
+	//SessionRowClass = SessionRowBPClass.Class;
+
+
 	if (NewSessionButton == nullptr) return false;
 	NewSessionButton->OnClicked.AddDynamic(this, &UMainMenu::OnNewSessionPressed);
 
 	if (JoinSessionButton == nullptr) return false;
 	JoinSessionButton->OnClicked.AddDynamic(this, &UMainMenu::OnJoinSessionPressed);
+
+
+	if (CancelJoinSessionButton == nullptr) return false;
+	CancelJoinSessionButton->OnClicked.AddDynamic(this, &UMainMenu::OnCancelJoinSession);
+
+	if (JoinSelectedSessionButton == nullptr) return false;
+	JoinSelectedSessionButton->OnClicked.AddDynamic(this, &UMainMenu::OnJoinSelectedSession);
+
 
 	return true;
 }
@@ -77,10 +88,36 @@ void UMainMenu::OnNewSessionPressed()
 {
 	if (SessionMenuInterface == nullptr) return;
 	SessionMenuInterface->Host("CoopPuzzleGameServer");
+
+	
 }
 
 void UMainMenu::OnJoinSessionPressed()
 {
+	if ((MenuSwitcher == nullptr) || (SessionListMenuWidget == nullptr)) return;
+
+	MenuSwitcher->SetActiveWidget(SessionListMenuWidget);
+	
 	if (SessionMenuInterface == nullptr) return;
 }
 
+
+
+
+//// JOIN SESSIONS ///////
+void UMainMenu::OnCancelJoinSession()
+{
+	if ((MenuSwitcher == nullptr) || (HostSessionMenuWidget == nullptr)) return;
+
+	MenuSwitcher->SetActiveWidget(HostSessionMenuWidget);
+}
+
+void UMainMenu::OnJoinSelectedSession()
+{
+	if ((ScrollSessionList == nullptr) && (SessionMenuInterface == nullptr)) return;
+
+	// TODO: CALL INTERFACE
+
+}
+
+//// JOIN SESSIONS ///////
