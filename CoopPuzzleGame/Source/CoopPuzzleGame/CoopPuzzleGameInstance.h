@@ -49,6 +49,9 @@ public:
 
 	UFUNCTION()
 	void EndSession() override;
+
+	UFUNCTION()
+	void OpenSessionListMenu() override;
 	///// ISessionMenuInterface /////////////////// 
 
 

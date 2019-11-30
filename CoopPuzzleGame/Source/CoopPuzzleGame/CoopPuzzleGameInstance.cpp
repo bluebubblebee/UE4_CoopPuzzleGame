@@ -70,6 +70,9 @@ void UCoopPuzzleGameInstance::LoadMainMenu()
 
 
 
+
+
+
 ///// Session Handling events /////////////////// 
 void UCoopPuzzleGameInstance::OnCreateSessionComplete(FName SessionName, bool Success)
 {
@@ -106,11 +109,68 @@ void UCoopPuzzleGameInstance::OnCreateSessionComplete(FName SessionName, bool Su
 }
 
 
+void UCoopPuzzleGameInstance::OpenSessionListMenu()
+{
+	if (MainMenu == nullptr) return;
 
+	SessionSearch = MakeShareable(new FOnlineSessionSearch());
+
+	if (SessionSearch.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::OpenSessionListMenu] Session is valid"));
+		//SessionSearch->bIsLanQuery = true;
+		SessionSearch->MaxSearchResults = 100;
+		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
+	}
+}
 
 void UCoopPuzzleGameInstance::OnFindSessionsComplete(bool Success)
 {
+	if (MainMenu == nullptr) return;
 
+	if (Success && SessionSearch.IsValid())
+	{
+		if (SessionSearch->SearchResults.Num() <= 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::OnFindSessionsComplete] No Sessions Find"));
+		}
+		else
+		{
+			TArray<FServerData> ServerData;
+			for (const FOnlineSessionSearchResult& SearchResult : SessionSearch->SearchResults)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::OnFindSessionsComplete] Session Name %s"), *SearchResult.GetSessionIdStr());
+
+				FServerData Data;
+				FString ServerName;
+				if (SearchResult.Session.SessionSettings.Get(SERVER_NAME_SETTINGS_KEY, ServerName))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::OnFindSessionsComplete] Data found in settings %s"), *ServerName);
+					Data.Name = ServerName;
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::OnFindSessionsComplete] Data NOT found in settings"));
+
+					Data.Name = "Could not find name";
+				}
+
+				Data.MaxPlayers = SearchResult.Session.SessionSettings.NumPublicConnections;
+				Data.CurrentPlayers = Data.MaxPlayers - SearchResult.Session.NumOpenPublicConnections;
+				Data.HostUsername = SearchResult.Session.OwningUserName;
+
+				ServerData.Add(Data);
+			}
+
+
+			MainMenu->InitializeSessionsList(ServerData);
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::OnFindSessionsComplete] Error session not found"));
+	}
 }
 
 void UCoopPuzzleGameInstance::OnDestroySessionComplete(FName SessionName, bool Success)
@@ -128,11 +188,7 @@ void UCoopPuzzleGameInstance::OnDestroySessionComplete(FName SessionName, bool S
 	}
 }
 
-void UCoopPuzzleGameInstance::OnJoinSessionsComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
-{
 
-
-}
 
 ///// ISessionMenuInterface /////////////////// 
 
@@ -170,8 +226,46 @@ void UCoopPuzzleGameInstance::Host(FString ServerName)
 
 void UCoopPuzzleGameInstance::JoinSession(uint32 Index)
 {
+	if (!SessionInterface.IsValid() || (!SessionSearch.IsValid())) return;
+
+	if (Index < (uint32)(SessionSearch->SearchResults.Num()))
+	{
+		SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]);
+	}
+}
+
+void UCoopPuzzleGameInstance::OnJoinSessionsComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	UE_LOG(LogTemp, Warning, TEXT("[UCoopPuzzleGameInstance::OnJoinSessionsComplete]"));
+
+	if (MainMenu != nullptr)
+	{
+		MainMenu->Teardown();
+	}
+	if (!SessionInterface.IsValid()) return;
+
+	FString Url;
+	if (!SessionInterface->GetResolvedConnectString(SESSION_NAME, Url))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UNetTileMazeGameInstance::OnJoinSessionsComplete] Couldn't get Connect String"));
+		return;
+	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("[UNetTileMazeGameInstance::OnJoinSessionsComplete] Url: %s"), *Url);
+
+	APlayerController* PlayerController = GetFirstLocalPlayerController();
+
+	if (PlayerController == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UNetTileMazeGameInstance::OnJoinSessionsComplete] Player Controller DOESN'T EXIST"));
+		return;
+	}
+
+
+	PlayerController->ClientTravel(Url, ETravelType::TRAVEL_Absolute);
 
 }
+
 
 void UCoopPuzzleGameInstance::EndSession()
 {

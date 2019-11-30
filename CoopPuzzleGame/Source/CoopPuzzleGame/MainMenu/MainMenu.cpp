@@ -3,6 +3,7 @@
 
 #include "MainMenu.h"
 #include "CoopPuzzleGamePlayerController.h"
+#include "SessionRow.h"
 
 #include "UObject/ConstructorHelpers.h"
 
@@ -16,11 +17,6 @@ bool UMainMenu::Initialize()
 	bool Success = Super::Initialize();
 
 	if (!Success) return false;
-
-	//ConstructorHelpers::FClassFinder<UUserWidget> SessionRowBPClass(TEXT("/Game/CoopPuzzleGame/MainMenu/WBP_SessionRow"));
-	//if (SessionRowBPClass.Class == nullptr) return false;
-
-	//SessionRowClass = SessionRowBPClass.Class;
 
 
 	if (NewSessionButton == nullptr) return false;
@@ -99,6 +95,8 @@ void UMainMenu::OnJoinSessionPressed()
 	MenuSwitcher->SetActiveWidget(SessionListMenuWidget);
 	
 	if (SessionMenuInterface == nullptr) return;
+
+	SessionMenuInterface->OpenSessionListMenu();
 }
 
 
@@ -116,8 +114,82 @@ void UMainMenu::OnJoinSelectedSession()
 {
 	if ((ScrollSessionList == nullptr) && (SessionMenuInterface == nullptr)) return;
 
-	// TODO: CALL INTERFACE
 
+	if (SelectedScrollIndex.IsSet())
+	{
+		int32 ScrollCount = ScrollSessionList->GetChildrenCount();
+		int32 SelectedIndex = (int32)SelectedScrollIndex.GetValue();
+		if ((ScrollCount > 0) && (SelectedIndex >= 0) && (SelectedIndex < ScrollCount))
+		{
+			SessionMenuInterface->JoinSession(SelectedScrollIndex.GetValue());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[UMainMenu::InitializeSessionsList] No sessions available"));
+		}
+		
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UMainMenu::InitializeSessionsList] Unable to Join Session"));
+	}
+	
+
+}
+
+void UMainMenu::SelectIndexSessionList(uint32 Index)
+{
+	UE_LOG(LogTemp, Warning, TEXT("[UMainMenu::SelectIndex] SelectIndex: %i"), Index);
+
+	SelectedScrollIndex = Index;
+	UpdateSessionList();
+}
+
+void UMainMenu::UpdateSessionList()
+{
+	if (ScrollSessionList == nullptr) return;
+
+	// Start from 1, not counting Header
+	int indexRow = 0;
+	for (int32 i = 1; i < ScrollSessionList->GetChildrenCount(); ++i)
+	{
+		auto Row = Cast<USessionRow>(ScrollSessionList->GetChildAt(i));
+		if (Row != nullptr)
+		{
+			Row->Selected = (SelectedScrollIndex.IsSet() && (SelectedScrollIndex.GetValue() == indexRow));
+
+			indexRow++;
+		}
+	}
+}
+
+void UMainMenu::InitializeSessionsList(TArray<FServerData> Data)
+{
+	UE_LOG(LogTemp, Warning, TEXT("[UMainMenu::InitializeSessionsList] %i"), Data.Num());
+	if (ScrollSessionList == nullptr) return;
+
+	UWorld* World = this->GetWorld();
+	if (World == nullptr) return;
+
+	ScrollSessionList->ClearChildren();
+	uint32 IndexRow = 0;
+	for (const FServerData& ServerData : Data)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UMainMenu::InitializeSessionsList] %s"), *ServerData.Name);
+
+		USessionRow* Row = CreateWidget<USessionRow>(World, SessionRowClass);
+		if (Row == nullptr) return;
+
+		Row->ServerName->SetText(FText::FromString(ServerData.Name));
+		Row->HostUser->SetText(FText::FromString(ServerData.HostUsername));
+
+		FString FractionText = FString::Printf(TEXT("%d/%d"), ServerData.CurrentPlayers, ServerData.MaxPlayers);
+		Row->ConnectionFraction->SetText(FText::FromString(FractionText));
+
+		Row->Setup(this, IndexRow);
+		++IndexRow;
+		ScrollSessionList->AddChild(Row);
+	}
 }
 
 //// JOIN SESSIONS ///////

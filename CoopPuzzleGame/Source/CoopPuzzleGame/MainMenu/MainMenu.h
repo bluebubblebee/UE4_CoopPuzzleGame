@@ -7,6 +7,19 @@
 #include "SessionMenuInterface.h"
 #include "MainMenu.generated.h"
 
+
+// Struct for sessions
+USTRUCT()
+struct FServerData
+{
+	GENERATED_BODY()
+
+	FString Name;
+	uint16 CurrentPlayers;
+	uint16 MaxPlayers;
+	FString HostUsername;
+};
+
 /**
  * 
  */
@@ -84,6 +97,10 @@ protected:
 	UFUNCTION()
 	void OnJoinSelectedSession();
 
+public: 
+	void InitializeSessionsList(TArray<FServerData> Data);
+	void SelectIndexSessionList(uint32 Index);
+	void UpdateSessionList();
 
 	//// JOIN SESSIONS ///////
 

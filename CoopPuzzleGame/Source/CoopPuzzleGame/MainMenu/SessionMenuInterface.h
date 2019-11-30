@@ -29,9 +29,7 @@ public:
 
 	virtual void EndSession() = 0;
 
-	//virtual void LoadMainMenu() = 0;
-
-	//virtual void OpenSessionListMenu() = 0;
+	virtual void OpenSessionListMenu() = 0;
 
 	
 };
